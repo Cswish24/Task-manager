@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} Create a new SubTask {% endblock %}
+
+{% block content %} 
+
+<p>Create Subtask for {{subtask.name}}/{{subtask.id}}</p>
+
+<form action="/create_subsubtask/{{subtask.id}}" method="post" role="form">
+  <label for="name">name</label><input type="text" name="name" id="name" required >
+  <label for="description">description</label><textarea name="description" id="description" cols="30" rows="10"></textarea>
+  <label for="priority">priority</label><select name="priority" id="priority" required> <option value="" selected hidden disabled>Select</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option>
+  <input type="submit" id="submit" name="submit" value="Add Task">
+</form>
+
+<a href="{{url_for('subtask_view', subtask_id=subtask.id)}}">Cancel</a>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header%} {% endblock %}
+
+
+{% block content %} 
+
+{{subsubtask.name}}{{subsubtask.description}}{{subsubtask.priority}}
+
+
+<a href="{{url_for('subtask_view', subtask_id=subsubtask.subtask_id)}}">Return to Subtask</a>
+
+{% endblock %}
+

@@ -11,10 +11,8 @@
   <p><a href="{{url_for('subtask_view', subtask_id=subtask.id)}}">{{subtask.name}}</a> {{subtask.priority}}</p>
 {% endfor %}
 
-<a href="">Add Subtask</a>
+<a href="{{url_for('create_subtask', task_id=task.id)}}">Add Subtask</a>
 
+<a href="{{url_for('home')}}">Return to home screen</a>
 
 {% endblock %}
-
-</body>
-</html>

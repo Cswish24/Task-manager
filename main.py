@@ -17,8 +17,10 @@ db = SQLAlchemy(app)
 class Task(db.Model):
     __tablename__ = "Tasks"
     id = db.Column(db.Integer, primary_key=True)
+    complete = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    completion_notes = db.Column(db.Text, nullable=True)
     priority = db.Column(db.String(10), nullable=False)
     sub_tasks = db.relationship("SubTask", backref="task", lazy=True)
 
@@ -26,8 +28,10 @@ class Task(db.Model):
 class SubTask(db.Model):
     __tablename__ = "SubTasks"
     id = db.Column(db.Integer, primary_key=True)
+    complete = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    completion_notes = db.Column(db.Text, nullable=True)
     priority = db.Column(db.String(10), nullable=False)
     task_id = db.Column(db.Integer, db.ForeignKey('Tasks.id'), nullable=False)
     sub_sub_tasks = db.relationship("SubSubTask", backref="subtask", lazy=True)
@@ -36,8 +40,10 @@ class SubTask(db.Model):
 class SubSubTask(db.Model):
     __tablename__ = "SubSubTasks"
     id = db.Column(db.Integer, primary_key=True)
+    complete = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    completion_notes = db.Column(db.Text, nullable=True)
     priority = db.Column(db.String(10), nullable=False)
     subtask_id = db.Column(db.Integer, db.ForeignKey(
         'SubTasks.id'), nullable=False)
@@ -67,7 +73,7 @@ def create_task():
         db.session.commit()
         task = Task.query.filter_by(name=request.form['name']).first()
 
-        return redirect(url_for('create_subtask', task_id=task.id))
+        return redirect(url_for('task_view', task_id=task.id))
 
     return render_template('create_task.html')
 
@@ -87,12 +93,35 @@ def create_subtask(task_id):
 
         db.session.add(new_task)
         db.session.commit()
-        return redirect(url_for('home'))
-    print('jank')
+        subtask = SubTask.query.filter_by(name=request.form['name']).first()
+        return redirect(url_for('subtask_view', subtask_id=subtask.id))
+
     return render_template('create_subtask.html', task=task)
 
 
-@app.route('/task_view/<int:task_id>', methods=['GET', 'POST'])
+@app.route('/create_subsubtask/<int:subtask_id>', methods=['GET', 'POST'])
+def create_subsubtask(subtask_id):
+    subtask = SubTask.query.get(subtask_id)
+    if request.method == 'POST':
+
+        new_task = SubSubTask(
+            name=request.form['name'],
+            description=request.form['description'],
+            priority=request.form['priority'],
+            subtask_id=subtask_id,
+        )
+        print(request.form['name'])
+
+        db.session.add(new_task)
+        db.session.commit()
+        subsubtask = SubSubTask.query.filter_by(
+            name=request.form['name']).first()
+        return redirect(url_for('subsubtask_view', subsubtask_id=subsubtask.id))
+
+    return render_template('create_subsubtask.html', subtask=subtask)
+
+
+@app.route('/task_view/<int:task_id>')
 def task_view(task_id):
     print(task_id)
     task = Task.query.get(task_id)
@@ -100,11 +129,17 @@ def task_view(task_id):
     return render_template('task_view.html', task=task, subtasks=subtasks)
 
 
-@app.route('/subtask_view/<int:subtask_id>', methods=['GET', 'POST'])
+@app.route('/subtask_view/<int:subtask_id>')
 def subtask_view(subtask_id):
     subtask = SubTask.query.get(subtask_id)
     subsubtasks = SubSubTask.query.filter_by(subtask_id=subtask_id).all()
     return render_template('subtask_view.html', subtask=subtask, subsubtasks=subsubtasks)
+
+
+@app.route('/subsubtask_view/<int:subsubtask_id>')
+def subsubtask_view(subsubtask_id):
+    subsubtask = SubSubTask.query.get(subsubtask_id)
+    return render_template('subsubtask_view.html', subsubtask=subsubtask)
 
 
 if __name__ == "__main__":

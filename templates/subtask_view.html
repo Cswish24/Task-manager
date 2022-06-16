@@ -8,13 +8,11 @@
 {{subtask.name}}{{subtask.description}}{{subtask.priority}}
 
 {% for subsubtask in subsubtasks %}
-  <p><a href="">{{subsubtask.name}}</a> {{subsubtask.priority}}</p>
+  <p><a href="{{url_for('subsubtask_view', subsubtask_id=subsubtask.id)}}">{{subsubtask.name}}</a> {{subsubtask.priority}}</p>
 {% endfor %}
 
-<a href="">Add Subsubtask</a>
+<a href="{{url_for('create_subsubtask', subtask_id=subtask.id)}}">Add Subsubtask</a>
 
+<a href="{{url_for('task_view', task_id=subtask.task_id)}}">Return to Task</a>
 
 {% endblock %}
-
-</body>
-</html>

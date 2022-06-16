@@ -7,7 +7,12 @@
   {%block css %} {% endblock %}
   <title>{% block title %} {% endblock %}</title>
 
-{% block content %} {% endblock %}
+  <a href="{{url_for('home')}}">Home</a>
+  <br>
+
 </head>
 <body>
   
+  {% block content %} {% endblock %}
+</body>
+</html>
