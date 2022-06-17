@@ -9,6 +9,7 @@
 <form action="/create_subtask/{{task.id}}" method="post" role="form">
   <label for="name">name</label><input type="text" name="name" id="name" required >
   <label for="description">description</label><textarea name="description" id="description" cols="30" rows="10"></textarea>
+  <label for="due_date">Due Date</label> <input type="date" id="due_date" name="due_date">
   <label for="priority">priority</label><select name="priority" id="priority" required> <option value="" selected hidden disabled>Select</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option>
   <input type="submit" id="submit" name="submit" value="Add Task">
 </form>

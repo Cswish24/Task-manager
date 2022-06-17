@@ -1,6 +1,6 @@
 import os
-from django.shortcuts import render
-
+import datetime
+from sqlalchemy import desc
 from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 
@@ -20,6 +20,7 @@ class Task(db.Model):
     complete = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    due_date = db.Column(db.Date, nullable=True)
     completion_notes = db.Column(db.Text, nullable=True)
     priority = db.Column(db.String(10), nullable=False)
     sub_tasks = db.relationship("SubTask", backref="task", lazy=True)
@@ -31,6 +32,7 @@ class SubTask(db.Model):
     complete = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    due_date = db.Column(db.Date, nullable=True)
     completion_notes = db.Column(db.Text, nullable=True)
     priority = db.Column(db.String(10), nullable=False)
     task_id = db.Column(db.Integer, db.ForeignKey('Tasks.id'), nullable=False)
@@ -43,6 +45,7 @@ class SubSubTask(db.Model):
     complete = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    due_date = db.Column(db.Date, nullable=True)
     completion_notes = db.Column(db.Text, nullable=True)
     priority = db.Column(db.String(10), nullable=False)
     subtask_id = db.Column(db.Integer, db.ForeignKey(
@@ -54,19 +57,32 @@ db.create_all()
 
 @app.route('/')
 def home():
-    tasks = Task.query.all()
-    print(tasks)
-    return render_template('index.html', tasks=tasks)
+    tasks_due = Task.query.order_by(Task.due_date).limit(5).all()
+    tasks_priority = Task.query.order_by(Task.priority).limit(5).all()
+    tasks_recent = Task.query.order_by(desc(Task.id)).limit(5).all()
+    # tasks_recent_completed = Task.query.order_by(
+    #     Task.complete, desc(Task.completion_date)).limit(5).all()
+    return render_template('index.html',
+                           tasks_due=tasks_due,
+                           tasks_priority=tasks_priority,
+                           tasks_recent=tasks_recent,
+                           #  tasks_recent_completed=tasks_recent_completed,
+                           )
 
 
 @app.route('/create_task', methods=['GET', 'POST'])
 def create_task():
     if request.method == 'POST':
+        due_date = request.form['due_date'].replace("-", "")
+        due_date = datetime.datetime.strptime(
+            due_date, '%Y%m%d')
 
         new_task = Task(
             name=request.form['name'],
             description=request.form['description'],
             priority=request.form['priority'],
+            due_date=due_date,
+            complete=False,
         )
 
         db.session.add(new_task)
@@ -82,11 +98,15 @@ def create_task():
 def create_subtask(task_id):
     task = Task.query.get(task_id)
     if request.method == 'POST':
-
+        due_date = request.form['due_date'].replace("-", "")
+        due_date = datetime.datetime.strptime(
+            due_date, '%Y%m%d')
         new_task = SubTask(
             name=request.form['name'],
             description=request.form['description'],
             priority=request.form['priority'],
+            due_date=due_date,
+            complete=False,
             task_id=task_id,
         )
         print(request.form['name'])
@@ -103,11 +123,16 @@ def create_subtask(task_id):
 def create_subsubtask(subtask_id):
     subtask = SubTask.query.get(subtask_id)
     if request.method == 'POST':
+        due_date = request.form['due_date'].replace("-", "")
+        due_date = datetime.datetime.strptime(
+            due_date, '%Y%m%d')
 
         new_task = SubSubTask(
             name=request.form['name'],
             description=request.form['description'],
             priority=request.form['priority'],
+            due_date=request.form['due_date'],
+            complete=False,
             subtask_id=subtask_id,
         )
         print(request.form['name'])

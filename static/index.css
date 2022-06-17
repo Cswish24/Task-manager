@@ -1,0 +1,43 @@
+.due_task:link,
+.due_task:visited{
+  text-decoration: none;
+  color: inherit;
+  font-size: 2.4rem;
+  grid-column: 1/-1;
+}
+
+.due_task:hover,
+.due_task:active {
+  color: #845ef7;
+}
+
+.due_task_t {
+  grid-column: 1/-1;
+  font-size: 1.4rem;
+  justify-self: center;
+}
+
+.due_task_h {
+  font-size: 1.4rem;
+
+}
+
+.due_task_p {
+  font-size: 2.4rem;
+
+}
+
+.due_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  border: solid .2rem black;
+  border-radius: .5rem;
+  margin-bottom: 1.6rem;
+  margin-left: 1.6rem;
+  
+}
+
+.subheading {
+  grid-column: 1/-1;
+}
