@@ -3,16 +3,76 @@
 {% block header%} {% endblock %}
 
 
-{% block content %} 
+{%block css %}
+<link
+href="{{ url_for('static', filename='../static/general.css') }}"
+rel="stylesheet"
+/>
 
-{{subtask.name}}{{subtask.description}}{{subtask.priority}}
-
-{% for subsubtask in subsubtasks %}
-  <p><a href="{{url_for('subsubtask_view', subsubtask_id=subsubtask.id)}}">{{subsubtask.name}}</a> {{subsubtask.priority}}</p>
-{% endfor %}
-
-<a href="{{url_for('create_subsubtask', subtask_id=subtask.id)}}">Add Subsubtask</a>
-
-<a href="{{url_for('task_view', task_id=subtask.task_id)}}">Return to Task</a>
+<link
+href="{{ url_for('static', filename='../static/task_view.css') }}"
+rel="stylesheet"
+/>
 
 {% endblock %}
+
+
+{% block content %} 
+
+
+<div class="card">
+  <h2 class="heading">
+    {{subtask.name}}
+  </h2>
+  <div class="card-top">
+    {% if subtask.complete %}
+    <p class="card-text">Status: Complete</p>
+    {% else %}
+    <p class="card-text">Status: Incomplete</p>
+    {% endif %}
+    <p class="card-text"> Subtasks Complete: {{completed_tasks}}/{{total_tasks}}</p>
+    <p class="card-text">Due Date: {{subtask.due_date}}</p>
+    <p class="card-text">Priority: {{subtask.priority}}</p>
+    </div>
+  <div class="card-left">
+    <p class="card-text description">Description: </p>
+    <p class="description">{{subtask.description}}</p>
+    </div>
+  <div class="card-right">
+      <p class="card-text notes">Notes: </p>
+      <p class="notes">{{subtask.notes}}</p>
+      </div>
+      <div class="flex">
+
+        <a class="edit center" href="{{url_for('subtask_complete', subtask_id=subtask.id)}}">Change Status</a>
+        <a class="edit center" href="{{url_for('subtask_delete', subtask_id=subtask.id)}}"> Delete</a>
+
+        <a class="edit center" href="{{url_for('create_subsubtask', subtask_id=subtask.id)}}">Add Subtask</a>
+        <a class="edit" href="{{url_for('edit_subtask', subtask_id=subtask.id)}}">Edit Task</a>
+        <a class="edit" href="{{url_for('task_view', task_id=subtask.task_id)}}">Return to Task</a>
+
+      </div>
+</div>
+
+
+
+<div class="subcard-grid">
+  <h2 class="heading">Subtasks</h2>
+
+  {% for subsubtask in subsubtasks %}
+  <div class="subcard">
+    <a class="subheading" href="{{url_for('subsubtask_view', subsubtask_id=subsubtask.id)}}">{{subtask.name|truncate(15, True)}}</a>
+    {% if subsubtask.complete %}
+    <p class="card-text">Complete</p>
+    {% else %}
+    <p class="card-text">Incomplete</p>
+    {% endif %}
+    <p class="card-text ">Priority: {{subsubtask.priority}}</p>
+    <p class="card-text date">Due Date: {{subsubtask.due_date}}</p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+

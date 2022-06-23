@@ -1,18 +1,66 @@
+
 {% extends 'base.html' %}
 
-{% block title %} Create a new SubTask {% endblock %}
+{% block title %} Create a new Task {% endblock %}
+
+{%block css %}
+<link
+href="{{ url_for('static', filename='../static/general.css') }}"
+rel="stylesheet"
+/>
+
+<link
+href="{{ url_for('static', filename='../static/create.css') }}"
+rel="stylesheet"
+/>
+
+{% endblock %}
 
 {% block content %} 
 
-<p>Create Subtask for {{task.name}}/{{task.id}}</p>
+{% if edit %}
+
+<h2 class="heading">Edit Task</h2>
+  <form action="/edit_subtask/{{subtask.id}}" method="post" role="form">
+    <div class="box">
+
+      <div class="flex">
+        <label for="name">Name</label><input value="{{subtask.name}}" type="text" name="name" id="name" required >
+        <label for="due_date">Due Date</label> <input value="{{subtask.due_date}}" type="date" id="due_date" name="due_date">
+        <label for="priority">Priority</label><select name="priority" id="priority" required> <option value="{{subtask.priority}}" selected hidden>{{subtask.priority}}</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select>
+        
+        <label for="description">Description</label><textarea placeholder="{{subtask.description}}" name="description" id="description" cols="50" rows="5">{{subtask.description}}</textarea>
+        <label for="notes">Notes</label><textarea placeholder="{{subtask.notes}}" name="notes" id="notes" cols="50" rows="5">{{subtask.notes}}</textarea>
+        <div class="line">
+          <input class="edit" type="submit" id="submit" name="submit" value="Edit Task">
+          <a class="edit" href="{{url_for('subtask_view', subtask_id=subtask.id)}}">Cancel</a>       
+      </div>
+      </div>
+    </div>
+    </form>
+    
+
+{% else %}
+
+<h2 class="heading">Create Task</h2>
 
 <form action="/create_subtask/{{task.id}}" method="post" role="form">
-  <label for="name">name</label><input type="text" name="name" id="name" required >
-  <label for="description">description</label><textarea name="description" id="description" cols="30" rows="10"></textarea>
-  <label for="due_date">Due Date</label> <input type="date" id="due_date" name="due_date">
-  <label for="priority">priority</label><select name="priority" id="priority" required> <option value="" selected hidden disabled>Select</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option>
-  <input type="submit" id="submit" name="submit" value="Add Task">
-</form>
+  <div class="box">
 
-<a href="{{url_for('task_view', task_id=task.id)}}">Cancel</a>
+    <div class="flex">
+      <label for="name">Name</label><input type="text" name="name" id="name" required >
+      <label for="due_date">Due Date</label> <input type="date" id="due_date" name="due_date">
+      <label for="priority">Priority</label><select name="priority" id="priority" required> <option value="" selected hidden disabled>Select</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select>
+      <label for="description">Description</label><textarea name="description" id="description" cols="50" rows="5"></textarea>
+      <label for="notes">Notes</label><textarea name="notes" id="notes" cols="50" rows="5"></textarea>
+      <div class="line">
+        <input class="edit" type="submit" id="submit" name="submit" value="Add Task">
+        <a class="edit" href="{{url_for('task_view', task_id=task.id)}}">Cancel</a>
+    </div>
+    </div>
+</div>
+</form>
+{% endif %}
+
+
 {% endblock %}

@@ -17,7 +17,12 @@
 <body>
   <div class="header">
     <h1>Task Manager</h1>
-    <a href="{{url_for('home')}}">Home</a>
+    <div class="tags">
+
+      <a href="{{url_for('create_task')}}">Create Task</a>
+      <a href="{{url_for('all_tasks')}}">View All Tasks</a>
+      <a href="{{url_for('home')}}">Home</a>
+    </div>
   </div>
   
   {% block content %} {% endblock %}

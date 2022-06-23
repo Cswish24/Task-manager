@@ -25,7 +25,7 @@ rel="stylesheet"
             {% for task in tasks_due %}
             <div class="due_grid">
               <p class="due_task_t"> Task</p>
-              <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name}}</a>
+              <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name|truncate(20, True)}}</a>
               <p class="due_task_h"> Due Date </p>
               <p class="due_task_h"> Priority </p>
 
@@ -49,7 +49,7 @@ rel="stylesheet"
               {% for task in tasks_priority %}
               <div class="due_grid">
                 <p class="due_task_t"> Task</p>
-                <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name}}</a>
+                <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name|truncate(20, True)}}</a>
                 <p class="due_task_h"> Due Date </p>
                 <p class="due_task_h"> Priority </p>
   
@@ -72,7 +72,7 @@ rel="stylesheet"
                 {% for task in tasks_recent %}
                 <div class="due_grid">
                   <p class="due_task_t"> Task</p>
-                  <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name}}</a>
+                  <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name|truncate(20, True)}}</a>
                   <p class="due_task_h"> Due Date </p>
                   <p class="due_task_h"> Priority </p>
     
@@ -95,7 +95,7 @@ rel="stylesheet"
                   {% for task in tasks_recent_completed %}
                   <div class="due_grid">
                     <p class="due_task_t"> Task</p>
-                    <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name}}</a>
+                    <a class="due_task" href="{{url_for('task_view', task_id=task.id)}}">{{task.name|truncate(20, True)}}</a>
                     <p class="due_task_h"> Due Date </p>
                     <p class="due_task_h"> Priority </p>
       
@@ -109,9 +109,5 @@ rel="stylesheet"
 
     </div>
 
-
-
-  <a href="{{url_for('create_task')}}">Create a new Task</a>
-  
 {% endblock %}
 
